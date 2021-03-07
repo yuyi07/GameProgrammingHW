@@ -18,12 +18,42 @@ import { OBJLoader } from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoade
 
 
 var camera, scene, renderer;
-var train;
+var thomas;
 var angle = 0;
 var clock;
+var modelName;
 
 init();
 animate();
+
+function init() {
+  scene = new THREE.Scene();
+  clock = new THREE.Clock();
+
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x888888);
+  document.body.appendChild(renderer.domElement);
+
+  camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
+  camera.position.z = 500;
+  let controls = new OrbitControls(camera, renderer.domElement);
+
+  var gridXZ = new THREE.GridHelper(200, 20, 'red', 'white');
+  scene.add(gridXZ);
+
+  var directionalLight = new THREE.DirectionalLight(0xffffff);
+  directionalLight.position.set(0, 0, 1).normalize();
+  scene.add(directionalLight);
+
+  var pointLight = new THREE.PointLight (0xffffff);
+  pointLight.position.set (100,200,-100);
+  scene.add (pointLight);
+  ///////////////////
+  readModel('thomas');
+  thomas = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 30), new THREE.MeshNormalMaterial());
+
+}
 
 function readModel (modelName, targetSize=40) {
 	var onProgress = function(xhr) {
@@ -49,11 +79,11 @@ function readModel (modelName, targetSize=40) {
 		theObject.add(new THREE.BoxHelper(theObject));
 		theObject.name = 'OBJ'
 
-		train = new THREE.Object3D();
-		train.add(theObject);
-		train.rotation.y = Math.PI/2;
+		thomas = new THREE.Object3D();
+		thomas.add(theObject);
+		thomas.rotation.y = Math.PI/2;
 
-		scene.add (train);
+		scene.add (thomas);
 
 		}, onProgress, onError);
 
@@ -85,70 +115,48 @@ function unitize (object, targetSize) {
 	return theObject;
 }
 
-function init() {
-  scene = new THREE.Scene();
-  clock = new THREE.Clock();
-
-  renderer = new THREE.WebGLRenderer();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setClearColor(0x888888);
-  document.body.appendChild(renderer.domElement);
-
-  camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
-  camera.position.z = 500;
-  let controls = new OrbitControls(camera, renderer.domElement);
-
-  var gridXZ = new THREE.GridHelper(200, 20, 'red', 'white');
-  scene.add(gridXZ);
-  ///////////////////
-  train = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 30), new THREE.MeshNormalMaterial());
-  scene.add(train);
-  
-}
-
 function animate() {
   var radius = 50;
   var dt = clock.getDelta();
 
   if(status == 0)
   {
-    train.position.set(radius*Math.cos(angle) + 50, 5, -radius*Math.sin(angle));
-    train.rotation.y = angle;
+    thomas.position.set(radius*Math.cos(angle) + 50, 5, -radius*Math.sin(angle));
+    thomas.rotation.y = angle;
     
     angle += 2*0.10472*dt;
-    if(train.position.x < 50)
+    if(thomas.position.x < 50)
     {
       status = 1;
     }
   }
   else if(status == 1)
   {
-    train.position.x -= 2*0.10472;
-    if(train.position.x < -50)
+    thomas.position.x -= 2*0.10472;
+    if(thomas.position.x < -50)
     {
       status = 2;
     }
   }
   else if(status == 2)
   {
-    train.position.set(radius*Math.cos(angle) - 50, 5, -radius*Math.sin(angle));
-    train.rotation.y = angle;
+    thomas.position.set(radius*Math.cos(angle) - 50, 5, -radius*Math.sin(angle));
+    thomas.rotation.y = angle;
     
     angle += 2*0.10472*dt;
-    if(train.position.x > -50)
+    if(thomas.position.x > -50)
     {
       status = 3;
     }
   }
   else if(status == 3)
   {
-    train.position.x += 2*0.10472;
-    if(train.position.x > 50)
+    thomas.position.x += 2*0.10472;
+    if(thomas.position.x > 50)
     {
       status = 0;
     }
   }
-  console.log(angle);
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
