@@ -2,11 +2,17 @@
 <html>
 <head>
 <style>
-	
+#heading{
+	 position:absolute;
+	 text-align:center;
+	 width:100vw;
+}	
 </style> 
 </head>
 <body> 
-
+<div id = heading>
+  <button id='button'> Press </button>
+</div>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type = "module">
 
@@ -16,12 +22,22 @@ import { OrbitControls } from 'https://unpkg.com/three/examples/jsm/controls/Orb
 import { MTLLoader } from 'https://unpkg.com/three/examples/jsm/loaders/MTLLoader.js';
 import { OBJLoader } from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoader.js';
 
+$('#button').click(function(){
+ walk = ! walk;
+ 
+ if(walk)
+	$('#button').text ('stop');
+ else
+    $('#button').text ('walk');
+});
+
 
 var camera, scene, renderer;
 var thomas;
 var angle = 0;
 var clock;
 var modelName;
+var walk;
 
 init();
 animate();
@@ -52,7 +68,7 @@ function init() {
   ///////////////////
   readModel('thomas');
   thomas = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 30), new THREE.MeshNormalMaterial());
-
+  walk = true;
 }
 
 function readModel (modelName, targetSize=40) {
@@ -76,7 +92,7 @@ function readModel (modelName, targetSize=40) {
 		objLoader.load(modelName+'.obj', function(object) {
 
 		let theObject =  unitize (object, targetSize);
-		theObject.add(new THREE.BoxHelper(theObject));
+		//theObject.add(new THREE.BoxHelper(theObject));
 		theObject.name = 'OBJ'
 
 		thomas = new THREE.Object3D();
@@ -119,9 +135,9 @@ function animate() {
   var radius = 50;
   var dt = clock.getDelta();
 
-  if(status == 0)
+  if(status == 0 && walk)
   {
-    thomas.position.set(radius*Math.cos(angle) + 50, 5, -radius*Math.sin(angle));
+    thomas.position.set(radius*Math.cos(angle) + 50, 10, -radius*Math.sin(angle));
     thomas.rotation.y = angle;
     
     angle += 2*0.10472*dt;
@@ -130,7 +146,7 @@ function animate() {
       status = 1;
     }
   }
-  else if(status == 1)
+  else if(status == 1 && walk)
   {
     thomas.position.x -= 2*0.10472;
     if(thomas.position.x < -50)
@@ -138,9 +154,9 @@ function animate() {
       status = 2;
     }
   }
-  else if(status == 2)
+  else if(status == 2 && walk)
   {
-    thomas.position.set(radius*Math.cos(angle) - 50, 5, -radius*Math.sin(angle));
+    thomas.position.set(radius*Math.cos(angle) - 50, 10, -radius*Math.sin(angle));
     thomas.rotation.y = angle;
     
     angle += 2*0.10472*dt;
@@ -149,7 +165,7 @@ function animate() {
       status = 3;
     }
   }
-  else if(status == 3)
+  else if(status == 3 && walk)
   {
     thomas.position.x += 2*0.10472;
     if(thomas.position.x > 50)
