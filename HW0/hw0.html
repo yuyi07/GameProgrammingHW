@@ -135,44 +135,39 @@ function animate() {
   var radius = 50;
   var dt = clock.getDelta();
 
-  if(status == 0 && walk)
-  {
-    thomas.position.set(radius*Math.cos(angle) + 50, 10, -radius*Math.sin(angle));
-    thomas.rotation.y = angle;
-    
-    angle += 2*0.10472*dt;
-    if(thomas.position.x < 50)
-    {
-      status = 1;
+  if(walk){
+    if(status == 0){
+      thomas.position.set(radius*Math.cos(angle) + 50, 10, -radius*Math.sin(angle));
+      thomas.rotation.y = angle;
+      
+      angle += 2*0.10472*dt;
+      if(thomas.position.x < 50){
+        status = 1;
+      }
+    }
+    else if(status == 1){
+      thomas.position.x -= 2*0.10472;
+      if(thomas.position.x < -50){
+        status = 2;
+      }
+    }
+    else if(status == 2){
+      thomas.position.set(radius*Math.cos(angle) - 50, 10, -radius*Math.sin(angle));
+      thomas.rotation.y = angle;
+      
+      angle += 2*0.10472*dt;
+      if(thomas.position.x > -50){
+        status = 3;
+      }
+    }
+    else if(status == 3 && walk){
+      thomas.position.x += 2*0.10472;
+      if(thomas.position.x > 50){
+        status = 0;
+      }
     }
   }
-  else if(status == 1 && walk)
-  {
-    thomas.position.x -= 2*0.10472;
-    if(thomas.position.x < -50)
-    {
-      status = 2;
-    }
-  }
-  else if(status == 2 && walk)
-  {
-    thomas.position.set(radius*Math.cos(angle) - 50, 10, -radius*Math.sin(angle));
-    thomas.rotation.y = angle;
-    
-    angle += 2*0.10472*dt;
-    if(thomas.position.x > -50)
-    {
-      status = 3;
-    }
-  }
-  else if(status == 3 && walk)
-  {
-    thomas.position.x += 2*0.10472;
-    if(thomas.position.x > 50)
-    {
-      status = 0;
-    }
-  }
+  
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
