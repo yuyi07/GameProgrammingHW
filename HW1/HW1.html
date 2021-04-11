@@ -222,8 +222,21 @@ function collision(i, j){
 	let dis = balls[j].pos.clone().sub(balls[i].pos.clone());
 	if(dis.length() <= 20){
 		//collisionSound.play();
-		balls[j].vel.copy(dis.clone().normalize());
-		balls[i].vel.copy(dis.clone().multiplyScalar(-1).normalize());
+		var v1 = balls[i].vel.clone();v1.y = 0;
+		var v2 = balls[j].vel.clone();v2.y = 0;
+		var x1 = balls[i].pos.clone();x1.y = 0;
+		var x2 = balls[j].pos.clone();x2.y = 0;
+
+		var v12 = v1.clone().sub(v2);
+		var x12 = x1.sub(x2);
+
+		let correction = x12.multiplyScalar(v12.dot(x12)/x12.lengthSq());
+
+		v1.sub(correction);
+		v2.add(correction);
+
+		balls[i].vel.copy(v1);
+		balls[j].vel.copy(v2);
 		
 	}
 }
