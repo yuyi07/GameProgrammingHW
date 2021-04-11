@@ -152,7 +152,7 @@ function init() {
   
 
 	let ballMesh = buildBallMesh (new THREE.Color().setHSL (Math.random(), .9, .4));
-  	var ball = new Ball (new THREE.Vector3(0,2,0), new THREE.Vector3(-4,0,0), ballMesh);
+  	var ball = new Ball (new THREE.Vector3(110,2,-10), new THREE.Vector3(-4,0,0), ballMesh);
 	balls.push (ball);
 
   	ballMesh = buildBallMesh (new THREE.Color().setHSL (Math.random(), .9, .4));
@@ -160,7 +160,7 @@ function init() {
 	balls.push (ball2);
 
 	ballMesh = buildBallMesh (new THREE.Color().setHSL (Math.random(), .9, .4));
-  	let ball3 = new Ball (new THREE.Vector3(0,2,100), new THREE.Vector3(4,0,0), ballMesh);
+  	let ball3 = new Ball (new THREE.Vector3(0,2,-100), new THREE.Vector3(4,0,0), ballMesh);
 	balls.push (ball3);
 
 	ballMesh = buildBallMesh (new THREE.Color().setHSL (Math.random(), .9, .4));
@@ -172,7 +172,7 @@ function init() {
 	balls.push (ball5);
 
 	ballMesh = buildBallMesh (new THREE.Color().setHSL (Math.random(), .9, .4));
-  	let ball6 = new Ball (new THREE.Vector3(60,2,60), new THREE.Vector3(4,0,0), ballMesh);
+  	let ball6 = new Ball (new THREE.Vector3(60,2,-60), new THREE.Vector3(4,0,0), ballMesh);
 	balls.push (ball6);
   /////////////////////////////////////////////////////////////////////
 
