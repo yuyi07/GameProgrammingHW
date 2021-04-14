@@ -393,7 +393,7 @@ function buildLArm(WW, HH, DD){
 	let lArm = new THREE.Group();
   	let mesh = new THREE.Mesh (geometry, new THREE.MeshBasicMaterial({map: texture, side:THREE.DoubleSide}));
   	lArm.add (mesh);
-  	mesh.position.y = -HH/2;
+  	mesh.position.y = -HH/2//;
   	return lArm;
 }
 
@@ -557,7 +557,7 @@ function animate() {
 	rArm.rotation.x = intKey[0]; 
 
 
-	console.log(click);
+	//console.log(click);
  	if(click){
 		let cameraPos = new THREE.Vector3(0,8*WW,-14*WW);
 		head.localToWorld (cameraPos);
