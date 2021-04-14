@@ -25,6 +25,11 @@ import { OBJLoader } from 'https://unpkg.com/three/examples/jsm/loaders/OBJLoade
 
 $('#button').click(function(){
  	click = ! click;
+	 if(!click){
+		camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
+  		camera.position.set(0, 150, 300);
+		let controls = new OrbitControls(camera, renderer.domElement);
+	 }
 });
 var camera, scene, renderer;
 const WW = 4;
@@ -560,11 +565,6 @@ function animate() {
 		let cameraLookAt = new THREE.Vector3(0,2*WW,0);
 		head.localToWorld (cameraLookAt);
 		camera.lookAt (cameraLookAt);	 
-	}
- 	else{
-		camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
-  		camera.position.set(0, 150, 300);
-		let controls = new OrbitControls(camera, renderer.domElement);
 	}
     
 
