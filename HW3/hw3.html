@@ -48,6 +48,15 @@ var ts;// = -1; // ts < 0 --> not yet started
 var clock = new THREE.Clock();
 var T = 1;
 
+var pos = new THREE.Vector3();
+var speed, angle, vel;
+
+(function() {
+  Math.clamp = function(val,min,max){
+    return Math.min(Math.max(val,min),max);
+    
+  }})();
+
 // three STATES: Walk, S2W, Stand
 ///// WALK////////////////////////
 ///// WALK////////////////////////
@@ -270,7 +279,7 @@ function init() {
   var material = new THREE.MeshNormalMaterial({
     color: 0xffff00
   });
-  steve.position.y = 8;
+  steve.position.y = 12;
   gyro = new Gyroscope();
   //scene.add (gyro)
   steve.add (gyro)
@@ -278,6 +287,9 @@ function init() {
 
 	state = 'Stand';
   ts = clock.getElapsedTime();
+  pos = steve.position;
+  speed = 5.0;
+  angle = 0.0;
 
 }
 
@@ -686,7 +698,6 @@ function animate() {
    let R = 50;
    let omega = HH/R/T; 
 	keyboard.update();
-
    let intKey;
   switch (state) {
     case 'Stand':
@@ -694,13 +705,13 @@ function animate() {
       intKey = keyframeStand(clock.getElapsedTime(), TStand);
       break;
     case 'S2W':
-      console.log('... in S2W');
-	  theta += omega*dt;
+	  console.log('... in S2W');
+	  speed += 0.1;
       intKey = keyframeS2W(clock.getElapsedTime(), TS2W);
       break;
     case 'Walk':
       console.log('... in walk');
-	  theta += omega*dt*2;
+	  speed += 0.5;
       intKey = keyframeWalk(clock.getElapsedTime(), TWalk);
       break;
 	case 'W2S':
@@ -711,26 +722,24 @@ function animate() {
   }
 
 	if(walk){
+		console.log(steve.position);
+		if ( keyboard.pressed("left") ) 
+			angle += 0.01;               
+		if ( keyboard.pressed("right") )
+			angle -= 0.01;      
 
-		var count = theta / (2*Math.PI);
-		if( count  % 2  < 1){
-			steve.position.set (R*Math.cos(theta)-50, HH, -R*Math.sin(theta));
-			steve.rotation.y = Math.PI + theta;
-		}
-		else {
-			theta += omega*dt*2;
-			steve.position.set (-R/2*Math.sin(theta + Math.PI/2)+25, HH, R/2*Math.cos(theta+ Math.PI/2));
-			steve.rotation.y = -(Math.PI + theta);
-		}
+		speed = Math.clamp (speed, 0.1, 20.0);		
+		vel = new THREE.Vector3(0,0,speed);
+		
+		vel.applyAxisAngle (new THREE.Vector3(0,1,0), angle);
+		pos.add (vel.clone().multiplyScalar(dt)); 	
+
 	} 
 		lLeg.rotation.x = intKey[0];
 		rLeg.rotation.x = intKey[1];  
 
 		lArm.rotation.x = intKey[1];
 		rArm.rotation.x = intKey[0]; 
-
-  	
-	
 
 	
 	//console.log(walk);
@@ -739,6 +748,7 @@ function animate() {
 		ts = clock.getElapsedTime(); // move ts to start of stand
 		state = 'S2W';
 		intKey = keyframeS2W(ts, TS2W); 
+		
 	}
 
 	if (keyboard.up('space')) { // move to stand
@@ -753,8 +763,9 @@ function animate() {
 		renderer.render (scene, camera1)
 
 	}
-  		
-    
+	
+    steve.position.copy(pos);
+	steve.rotation.y = angle;
 
 
 }
